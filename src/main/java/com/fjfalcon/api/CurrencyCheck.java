@@ -1,10 +1,12 @@
-package com.fjfalcon.btc;
+package com.fjfalcon.api;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -13,10 +15,9 @@ import okhttp3.Response;
 /**
  * Created by fjfalcon on 14.05.17.
  */
-public class CurrencyCheck implements Runnable {
+public class CurrencyCheck {
 
     private final BalanceCheck balanceCheck;
-
     private BigDecimal usdToBtc;
     private BigDecimal usdToRub;
     private final OkHttpClient client;
@@ -26,7 +27,8 @@ public class CurrencyCheck implements Runnable {
         this.client = new OkHttpClient();
         this.balanceCheck = new BalanceCheck(client);
         exchangeRate = new Request.Builder().url("http://apilayer.net/api/live?access_key="+token+"&source=USD&currencies=BTC,RUB").build();
-        new Thread(this).start();
+        ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+        executor.scheduleAtFixedRate(this::update, 0,60, TimeUnit.MINUTES);
     }
 
     public BigDecimal getUsdToRub() {
@@ -42,18 +44,7 @@ public class CurrencyCheck implements Runnable {
         BigDecimal usd = btc.divide(usdToBtc,BigDecimal.ROUND_HALF_UP,2);
         BigDecimal rub = usd.multiply(usdToRub).setScale(2, BigDecimal.ROUND_HALF_UP);
 
-        return "BTC: " + btc.toString() + " USD: " +usd.toString() + " RUB: " +rub.toString();
-    }
-
-    public void run() {
-        while (true) {
-            update();
-            try {
-                Thread.sleep(1000 * 60 * 60);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+        return String.format("BTC: %s, USD: %s, RUB: %s",btc,usd,rub);
     }
 
     private void update() {

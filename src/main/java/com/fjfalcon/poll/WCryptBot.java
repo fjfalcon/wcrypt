@@ -1,14 +1,11 @@
 package com.fjfalcon.poll;
 
-import com.fjfalcon.btc.BalanceCheck;
-import com.fjfalcon.btc.CurrencyCheck;
+import com.fjfalcon.api.CurrencyCheck;
 
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
-
-import jdk.nashorn.internal.parser.Token;
 
 public class WCryptBot extends TelegramLongPollingBot {
 

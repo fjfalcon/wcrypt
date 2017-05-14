@@ -6,8 +6,6 @@ import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.TelegramBotsApi;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -23,8 +21,7 @@ public class Main {
         try {
             botsApi.registerBot(new WCryptBot(prop.getProperty("token"), prop.getProperty("name"), prop.getProperty("currency_token")));
         } catch (TelegramApiException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
-
 }
