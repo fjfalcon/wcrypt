@@ -28,7 +28,7 @@ public class WCryptBot extends TelegramLongPollingBot {
 
     public void onUpdateReceived(Update update) {
         if (update.hasMessage() && update.getMessage().hasText()) {
-            if (update.getMessage().getText().equals("/wcrypt")) {
+            if (update.getMessage().getText().startsWith("/wcrypt")) {
                 SendMessage message = new SendMessage() // Create a SendMessage object with mandatory fields
                         .setChatId(update.getMessage().getChatId())
                         .setText(currencyCheck.getMessage());
